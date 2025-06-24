@@ -41,6 +41,9 @@ export class CachePolicy implements IPolicy {
     options?: {
       key?: string;
       ttl?: number;
+      /** Ignore cache and compute function */
+      shouldCompute?: boolean;
+      /** Should cache result or not */
       shouldCache?: (value: T) => boolean | PromiseLike<boolean>;
     },
   ): Promise<T> {
@@ -49,10 +52,13 @@ export class CachePolicy implements IPolicy {
       (fn.name && `${this.constructor.name}::${fn.name}::${this.defaultHash}`) ||
       this.defaultCacheKey;
     const shouldCache = options?.shouldCache ?? ((_value: T) => true);
+    const shouldCompute = !!options?.shouldCompute;
 
-    const cachedValue = await this.cache.get<T>(cacheKey);
-    if (cachedValue !== undefined) {
-      return cachedValue;
+    if (shouldCompute) {
+      const cachedValue = await this.cache.get<T>(cacheKey);
+      if (cachedValue !== undefined) {
+        return cachedValue;
+      }
     }
 
     const result = await this.executor.invoke(fn, { signal });
