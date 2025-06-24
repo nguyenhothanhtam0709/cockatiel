@@ -54,7 +54,7 @@ export class CachePolicy implements IPolicy {
     const shouldCache = options?.shouldCache ?? ((_value: T) => true);
     const shouldCompute = !!options?.shouldCompute;
 
-    if (shouldCompute) {
+    if (!shouldCompute) {
       const cachedValue = await this.cache.get<T>(cacheKey);
       if (cachedValue !== undefined) {
         return cachedValue;
