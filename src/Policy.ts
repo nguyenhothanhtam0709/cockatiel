@@ -1,5 +1,6 @@
 import { ConstantBackoff, IBackoffFactory } from './backoff/Backoff';
 import { BulkheadPolicy } from './BulkheadPolicy';
+import { CacheObject, CachePolicy } from './CachePolicy';
 import { CircuitBreakerPolicy, ICircuitBreakerOptions } from './CircuitBreakerPolicy';
 import { Event } from './common/Event';
 import { ExecuteWrapper } from './common/Executor';
@@ -483,4 +484,11 @@ export function fallback<R>(policy: Policy, valueOrFactory: (() => Promise<R> | 
     // use a higher-order function if necessary.
     (typeof valueOrFactory === 'function' ? valueOrFactory : () => valueOrFactory) as () => R,
   );
+}
+
+/**
+ * Create new {@link CachePolicy}
+ */
+export function cache(cacheObject: CacheObject) {
+  return new CachePolicy(cacheObject);
 }
