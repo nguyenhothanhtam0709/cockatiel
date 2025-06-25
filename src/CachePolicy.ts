@@ -42,7 +42,7 @@ export class CachePolicy implements IPolicy {
       key?: string;
       ttl?: number;
       /** Ignore cache and compute function */
-      shouldCompute?: boolean;
+      shouldIgnoreCache?: boolean;
       /** Should cache result or not */
       shouldCache?: (value: T) => boolean | PromiseLike<boolean>;
     },
@@ -52,9 +52,9 @@ export class CachePolicy implements IPolicy {
       (fn.name && `${this.constructor.name}::${fn.name}::${this.defaultHash}`) ||
       this.defaultCacheKey;
     const shouldCache = options?.shouldCache ?? ((_value: T) => true);
-    const shouldCompute = !!options?.shouldCompute;
+    const shouldIgnoreCache = !!options?.shouldIgnoreCache;
 
-    if (!shouldCompute) {
+    if (!shouldIgnoreCache) {
       const cachedValue = await this.cache.get<T>(cacheKey);
       if (cachedValue !== undefined) {
         return cachedValue;
