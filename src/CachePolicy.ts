@@ -1,13 +1,15 @@
 import type { Cache } from 'cache-manager';
+import type { Cacheable } from 'cacheable';
 import { randomBytes } from 'node:crypto';
 import { neverAbortedSignal } from './common/abort';
 import { ExecuteWrapper } from './common/Executor';
 import { IDefaultPolicyContext, IPolicy } from './Policy';
 
-export type CacheObject = Pick<Cache, 'get' | 'set'>;
+export type CacheObject = Pick<Cache, 'get' | 'set'> | Pick<Cacheable, 'get' | 'set'>;
 
 /**
- * Based on {@link https://github.com/jaredwray/cacheable/tree/main/packages/cache-manager cache-manager}
+ * Compatible with {@link https://github.com/jaredwray/cacheable/tree/main/packages/cache-manager cache-manager}
+ * and {@link https://github.com/jaredwray/cacheable/tree/main/packages/cacheable cacheable}
  */
 export class CachePolicy implements IPolicy {
   declare readonly _altReturn: never;
